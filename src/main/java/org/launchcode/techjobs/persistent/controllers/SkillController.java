@@ -1,8 +1,6 @@
 package org.launchcode.techjobs.persistent.controllers;
 
-import org.launchcode.techjobs.persistent.models.Employer;
 import org.launchcode.techjobs.persistent.models.Skill;
-import org.launchcode.techjobs.persistent.models.data.EmployerRepository;
 import org.launchcode.techjobs.persistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,7 +19,7 @@ public class SkillController {
     private SkillRepository skillRepository;
 
 
-    @GetMapping()
+    @GetMapping("")
     public String index (Model model) {
         model.addAttribute("skills", skillRepository.findAll());
         return "skills/index";
@@ -33,10 +31,9 @@ public class SkillController {
     }
 
     @PostMapping("add")
-    public String processAddSkillsForm(@ModelAttribute @Valid Skill newSkill,
+    public String processAddSkillForm(@ModelAttribute @Valid Skill newSkill,
                                          Errors errors, Model model) {
         if (errors.hasErrors()) {
-            model.addAttribute(new Skill());
             return "skills/add";
         }
         skillRepository.save(newSkill);
@@ -44,7 +41,7 @@ public class SkillController {
     }
 
     @GetMapping("view/{skillId}")
-    public String displayViewSkills(Model model, @PathVariable int skillId) {
+    public String displayViewSkill(Model model, @PathVariable int skillId) {
 
         Optional optSkill = skillRepository.findById(skillId);
         if (optSkill.isPresent()) {
