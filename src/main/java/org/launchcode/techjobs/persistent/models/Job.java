@@ -1,7 +1,7 @@
 package org.launchcode.techjobs.persistent.models;
 
 import javax.persistence.*;
-
+//initial commit
 @Entity
 public class Job{
 
