@@ -1,5 +1,9 @@
 package org.launchcode.techjobs.persistent.controllers;
 
+import org.launchcode.techjobs.persistent.models.data.EmployerRepository;
+import org.launchcode.techjobs.persistent.models.data.JobRepository;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.launchcode.techjobs.persistent.models.Skill;
 import org.launchcode.techjobs.persistent.models.data.SkillRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,24 +22,34 @@ public class SkillController {
     @Autowired
     private SkillRepository skillRepository;
 
+    @Autowired
+    private JobRepository jobRepository;
 
-    @GetMapping("")
-    public String index (Model model) {
+    @Autowired
+    private EmployerRepository employerRepository;
+
+    @RequestMapping("")
+    public String index(Model model) {
+        model.addAttribute("title", "All Skills");
         model.addAttribute("skills", skillRepository.findAll());
         return "skills/index";
     }
+
     @GetMapping("add")
     public String displayAddSkillForm(Model model) {
+        model.addAttribute("title", "All Skills");
         model.addAttribute(new Skill());
         return "skills/add";
     }
 
     @PostMapping("add")
     public String processAddSkillForm(@ModelAttribute @Valid Skill newSkill,
-                                         Errors errors, Model model) {
+                                      Errors errors, Model model) {
+
         if (errors.hasErrors()) {
             return "skills/add";
         }
+
         skillRepository.save(newSkill);
         return "redirect:";
     }
@@ -43,9 +57,10 @@ public class SkillController {
     @GetMapping("view/{skillId}")
     public String displayViewSkill(Model model, @PathVariable int skillId) {
 
-        Optional optSkill = skillRepository.findById(skillId);
+        Optional<Skill> optSkill = skillRepository.findById(skillId);
+
         if (optSkill.isPresent()) {
-            Skill skill = (Skill) optSkill.get();
+            Skill skill = optSkill.get();
             model.addAttribute("skill", skill);
             return "skills/view";
         } else {
